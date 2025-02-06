@@ -190,11 +190,19 @@
   <script>
     let score = 0;
     const cuteMessages = [
-      "You're as sweet as candy!",
-      "Every heart counts!",
-      "Love is in the air!",
-      "You're my sunshine!",
-      "Keep shining, beautiful!"
+      "you, me and a box of chicken nuggets",
+      "Are you a campfire? ",
+      "Because you're hot, and I want s'more of you 🔥🍫",
+      "Purr purr meow moww (translation: You're the best!) 🐱",
+      "You look gorgeous today :3",
+      "How did i get so lucky?",
+      "Maow Meow Meiw Mew",
+      "Remember our first night together",
+      "I miss your smile :)",
+      "Keep shining, Señora",
+      "Give Duni a kith",
+      "r u from Tennessee?",
+      "because ur the only 10 i see",
     ];
     
     document.addEventListener("DOMContentLoaded", function () {
@@ -255,27 +263,44 @@
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
       document.getElementById('noButton').style.display = 'none';
-      noClickCount = 6; // Disable "No" button logic
+      noClickCount = 8; // Disable "No" button logic
       startHeartRain();
       startConfetti(); // Trigger confetti effect when Yes is pressed
     }
     
     function respondNo() {
-      if (noClickCount >= 6) return;
+      if (noClickCount >= 8) return;
       noClickCount++;
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
       document.getElementById('valentineGif').src = 'no_response.gif';
-      if (noClickCount < 6) {
+      if (noClickCount < 8) {
         noButton.style.position = 'absolute';
         noButton.style.left = `${Math.random() * (window.innerWidth * 0.6) - (window.innerWidth * 0.3)}px`;
         noButton.style.top = `${Math.max(50, Math.random() * (window.innerHeight - 200))}px`;
         noButton.innerText = [
-          "Someday you'll go far. I hope you stay there 🙃😢", 
-          "May both sides of your pillow be uncomfortably warm 💔", 
-          "How about a lambo? 🙃", 
+          "Ney Villain, I have done thy mother!",
+          "Someday you'll go far. I hope you stay there 😢",
+          "Someone forgot to shower today",
+          "In other words.. u smell",
+          "May both sides of your pillow be warm 2nite💔",
+          "How about a brownie",
+          "What about a lambo? 🙃",
+          "Okay Asswwipe",
+          "Your willy is rubbish", 
+          "I banish you to 1000 years of Fien",
           "If I wanted to hear from a butthole, I'd fart 😥", 
-          "okay estoy muerto"
+          "U LITTLE",
+          "okay estoy muerto",
+          "Really?🙃",
+          "May your socks be wet for an eternity",
+          "easy bake oven",
+          "Joe mama!",
+          "NUHH UHH",
+          "Listem 'ere twerp",
+          "FUUUUUU",
+
+
         ][noClickCount - 1];
         yesButton.style.fontSize = `${18 + noClickCount * 4}px`;
       } else {
