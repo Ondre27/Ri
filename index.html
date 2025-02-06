@@ -14,7 +14,6 @@
       50% { background-color: #ffb3b3; }
       100% { background-color: #ffcccb; }
     }
-    
     body {
       display: flex;
       justify-content: center;
@@ -40,7 +39,7 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* Border removed for a clean look */
+      /* No border is applied */
     }
     /* Valentine question text in black with Pacifico font */
     .message {
@@ -220,7 +219,7 @@
       startDriftingHearts();
     });
     
-    // Create ambient drifting hearts from the bottom
+    // Ambient drifting hearts from the bottom
     function startDriftingHearts() {
       setInterval(() => {
         let driftHeart = document.createElement("div");
@@ -235,9 +234,7 @@
       }, 4000);
     }
     
-    let noClickCount = 0;
-    
-    // Background music starts with the Yes button
+    // Start background music when Yes is pressed
     function playMusic() {
       const audio = document.getElementById("backgroundMusic");
       audio.play().then(() => {
@@ -253,8 +250,7 @@
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
-      // Keep the No button visible when Yes is clicked
-      noClickCount = 0;
+      // Do not hide the No button on Yes clicks
       startHeartRain();
       startConfetti();
     }
@@ -262,28 +258,17 @@
     function respondNo() {
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
-      // Increment noClickCount to cycle messages
-      noClickCount++;
-      // Calculate a small random offset (±50px) relative to current position
-      const currentLeft = noButton.offsetLeft;
-      const currentTop = noButton.offsetTop;
-      const offsetX = (Math.random() * 100) - 50;
-      const offsetY = (Math.random() * 100) - 50;
-      const newLeft = Math.max(0, Math.min(currentLeft + offsetX, window.innerWidth - noButton.offsetWidth));
-      const newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
+      // Change GIF to no response
+      document.getElementById('valentineGif').src = 'no_response.gif';
+      // Move the No button to a random position within the viewport
+      const newLeft = Math.random() * (window.innerWidth - noButton.offsetWidth);
+      const newTop = Math.random() * (window.innerHeight - noButton.offsetHeight);
+      noButton.style.position = 'absolute';
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
-      // Cycle through messages using modulo
-      const messages = [
-          "Someday you'll go far. I hope you stay there 🙃😢", 
-          "May both sides of your pillow be uncomfortably warm 💔", 
-          "How about a lambo? 🙃", 
-          "If I wanted to hear from a butthole, I'd fart 😥", 
-          "okay estoy muerto"
-      ];
-      noButton.innerText = messages[(noClickCount - 1) % messages.length];
-      // Optionally adjust the yes button's font size
-      yesButton.style.fontSize = `${18 + noClickCount * 4}px`;
+      // Increase the Yes button's font size by 2px each time
+      const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
+      yesButton.style.fontSize = (currentSize + 2) + "px";
     }
     
     // Create falling hearts that fall from the top with a swaying effect
@@ -302,7 +287,7 @@
           counter++;
           const currentTop = parseInt(heart.style.top);
           heart.style.top = (currentTop + 5) + "px";
-          // Sway left and right using a sine function
+          // Sway left/right using a sine function
           heart.style.left = (initialLeft + Math.sin(counter / 10) * 20) + "px";
           
           if (currentTop > window.innerHeight) {
