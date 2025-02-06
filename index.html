@@ -51,6 +51,9 @@
     }
     .buttons {
       margin-top: 20px;
+      position: relative;
+      /* Ensure there's enough room for absolute positioning of the No button */
+      height: 100px;
     }
     .yes, .no {
       font-size: 18px;
@@ -67,7 +70,8 @@
     .no {
       background-color: #dc3545;
       color: white;
-      position: relative;
+      position: absolute;
+      /* We'll set its initial position dynamically */
     }
     .heart {
       position: absolute;
@@ -267,19 +271,28 @@
     function respondNo() {
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
-      // Move the No button to a random position within the viewport using ±15px offsets
-      const currentLeft = noButton.offsetLeft;
-      const currentTop = noButton.offsetTop;
-      const offsetX = (Math.random() * 30) - 15; // range: -15 to +15
-      const offsetY = (Math.random() * 30) - 15; // range: -15 to +15
-      const newLeft = Math.max(0, Math.min(currentLeft + offsetX, window.innerWidth - noButton.offsetWidth));
-      const newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
+      // Set initial position for the No button if first click
+      if (noClickCount === 0) {
+        noButton.style.position = 'absolute';
+        noButton.style.left = '0px';
+        noButton.style.top = (window.innerHeight - noButton.offsetHeight) + "px";
+      }
+      // Calculate random offset: move up (decrease top) and right (increase left)
+      const offsetX = Math.random() * 15;  // 0 to 15px right
+      const offsetY = Math.random() * 15;  // 0 to 15px up
+      let currentLeft = noButton.offsetLeft;
+      let currentTop = noButton.offsetTop;
+      let newLeft = currentLeft + offsetX;
+      let newTop = currentTop - offsetY;
+      // Clamp new positions so the button stays visible
+      newLeft = Math.min(newLeft, window.innerWidth - noButton.offsetWidth);
+      newTop = Math.max(newTop, 0);
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
       // Cycle through messages
       noButton.innerText = noMessages[noClickCount % noMessages.length];
       noClickCount++;
-      // Increase the Yes button's font size by 2px each time
+      // Increase the Yes button's font size by 2px
       const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
       yesButton.style.fontSize = (currentSize + 2) + "px";
     }
