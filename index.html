@@ -270,8 +270,8 @@
     
     function respondNo() {
       const noButton = document.getElementById('noButton');
-      const newLeft = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const newTop = Math.random() * (window.innerHeight - noButton.offsetHeight);
+      const newLeft = Math.random() * (window.innerWidth);
+      const newTop = Math.random() * (window.innerHeight);
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
       // Cycle through the messages by updating the button text.
