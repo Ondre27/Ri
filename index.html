@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffcccb;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .container {
+      position: relative;
+      z-index: 3;
+      margin-top: 20px;
+    }
+    .gif-container {
+      margin-bottom: 20px;
+    }
+    .gif-container img {
+      width: 500px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+      /* No border as requested */
+    }
+    /* Valentine question text in black */
+    .message {
+      font-size: 30px;
+      font-weight: bold;
+      font-family: 'Pacifico', cursive;
+      color: black;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    .yes, .no {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .yes {
+      background-color: #28a745;
+      color: white;
+    }
+    .no {
+      background-color: #dc3545;
+      color: white;
+      position: relative;
+    }
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 24px;
+      user-select: none;
+      z-index: 1;
+    }
+    /* Drift-heart: ambient hearts drifting upward from the bottom */
+    .drift-heart {
+      position: absolute;
+      font-size: 30px;
+      opacity: 0.3;
+      z-index: 0;
+      animation: drift 15s linear infinite;
+    }
+    @keyframes drift {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-120vh); }
+    }
+    /* Basket styling: Aesthetic black bar at the bottom */
+    #basket {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 40px;
+      background-color: black;
+      border-top: 3px solid #444;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
+      z-index: 3;
+    }
+    /* Score display styling */
+    #score {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      color: black;
+      z-index: 4;
+    }
+    /* Confetti styling */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #ff69b4;
+      opacity: 0.9;
+      z-index: 5;
+      animation: confetti-fall 2s linear forwards;
+    }
+    @keyframes confetti-fall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    /* Cute message popup styling */
+    #cuteMessage {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 182, 193, 0.9);
+      color: #d6336c;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 20px;
+      z-index: 6;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background music element -->
+  <audio id="backgroundMusic" preload="auto" loop>
+    <source src="valentine_music.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+  
+  <div class="container">
+    <div class="gif-container">
+      <img id="valentineGif" src="initial_question.gif" alt="Valentine Question" />
+    </div>
+    <div class="message">Will you be my Valentine, Ritrika? 💖</div>
+    <div class="buttons">
+      <button class="yes" id="yesButton">Yes!</button>
+      <button class="no" id="noButton">No...</button>
+    </div>
+    <p class="extra-text" style="display:none; margin-top:20px;">
+      Check this out: <a href="#" id="extra-link">Your Link Here</a>
+    </p>
+    <p class="extra-text" id="byRamone" style="display:none; margin-top:10px; font-weight: bold;">
+      By Ramone
+    </p>
+  </div>
+  
+  <!-- Basket element as an aesthetic black bar -->
+  <div id="basket"></div>
+  <!-- Score display -->
+  <div id="score">Score: 0</div>
+  <!-- Cute message display -->
+  <div id="cuteMessage"></div>
+  
+  <script>
+    let score = 0; // Global score variable
+    const cuteMessages = [
+      "You're as sweet as candy!",
+      "Every heart counts!",
+      "Love is in the air!",
+      "You're my sunshine!",
+      "Keep shining, beautiful!"
+    ];
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      const audio = document.getElementById("backgroundMusic");
+      audio.addEventListener("canplay", function() {
+        console.log("Audio is ready to play.");
+      });
+      audio.addEventListener("error", function(e) {
+        console.error("Audio error:", e);
+      });
+      
+      document.getElementById("yesButton").addEventListener("click", respondYes);
+      document.getElementById("noButton").addEventListener("click", respondNo);
+      
+      // Make the basket (black bar) follow the cursor horizontally
+      document.addEventListener("mousemove", function(e) {
+        let basket = document.getElementById("basket");
+        let basketWidth = basket.offsetWidth;
+        basket.style.left = (e.clientX - basketWidth / 2) + "px";
+      });
+      
+      // Start ambient drifting hearts for ambiance
+      startDriftingHearts();
+    });
+    
+    // Function to create ambient drifting hearts from the bottom
+    function startDriftingHearts() {
+      setInterval(() => {
+        let driftHeart = document.createElement("div");
+        driftHeart.classList.add("drift-heart");
+        driftHeart.innerHTML = "💗";
+        driftHeart.style.left = Math.random() * window.innerWidth + "px";
+        driftHeart.style.top = window.innerHeight + "px";
+        document.body.appendChild(driftHeart);
+        setTimeout(() => {
+          driftHeart.remove();
+        }, 15000);
+      }, 4000);
+    }
+    
+    let noClickCount = 0;
+    
+    // Background music is started by the Yes button
+    function playMusic() {
+      const audio = document.getElementById("backgroundMusic");
+      audio.play().then(() => {
+        console.log("Music is playing.");
+      }).catch(error => {
+        console.error("Audio playback error:", error);
+      });
+    }
+    
+    function respondYes() {
+      document.getElementById('valentineGif').src = 'yes_response.gif';
+      playMusic();
+      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
+      document.querySelector('.extra-text').style.display = 'block';
+      document.querySelector('#byRamone').style.display = 'block';
+      document.getElementById('noButton').style.display = 'none';
+      noClickCount = 6; // Disable "No" button logic
+      startHeartRain();
+      startConfetti(); // Trigger confetti effect when Yes is pressed
+    }
+    
+    function respondNo() {
+      if (noClickCount >= 6) return;
+      noClickCount++;
+      const noButton = document.getElementById('noButton');
+      const yesButton = document.getElementById('yesButton');
+      document.getElementById('valentineGif').src = 'no_response.gif';
+      if (noClickCount < 6) {
+        noButton.style.position = 'absolute';
+        noButton.style.left = `${Math.random() * (window.innerWidth * 0.6) - (window.innerWidth * 0.3)}px`;
+        noButton.style.top = `${Math.max(50, Math.random() * (window.innerHeight - 200))}px`;
+        noButton.innerText = [
+          "Someday you'll go far. I hope you stay there 🙃😢", 
+          "May both sides of your pillow be uncomfortably warm 💔", 
+          "How about a lambo? 🙃", 
+          "If I wanted to hear from a butthole, I'd fart 😥", 
+          "okay estoy muerto"
+        ][noClickCount - 1];
+        yesButton.style.fontSize = `${18 + noClickCount * 4}px`;
+      } else {
+        noButton.style.display = 'none';
+        yesButton.style.fontSize = '46px';
+      }
+    }
+    
+    // Function to create falling hearts that fall from the top
+    function startHeartRain() {
+      setInterval(() => {
+        let heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        // Hearts originate from the top now
+        heart.style.top = "0px";
+        document.body.appendChild(heart);
+        
+        let moveInterval = setInterval(() => {
+          let currentTop = parseInt(heart.style.top);
+          heart.style.top = (currentTop + 5) + "px";
+          if (currentTop > window.innerHeight) {
+            clearInterval(moveInterval);
+            heart.remove();
+          }
+          let basket = document.getElementById("basket");
+          if (checkCollision(heart, basket)) {
+            score++;
+            document.getElementById("score").innerText = "Score: " + score;
+            clearInterval(moveInterval);
+            heart.remove();
+            if (score % 10 === 0 && score !== 0) {
+              let message = cuteMessages[(score / 10 - 1) % cuteMessages.length];
+              showCuteMessage(message);
+            }
+          }
+        }, 50);
+      }, 300);
+    }
+    
+    // Function to show a cute message for a few seconds
+    function showCuteMessage(msg) {
+      const cuteMessageDiv = document.getElementById("cuteMessage");
+      cuteMessageDiv.innerText = msg;
+      cuteMessageDiv.style.display = "block";
+      setTimeout(() => {
+        cuteMessageDiv.style.display = "none";
+      }, 4000);
+    }
+    
+    // Confetti effect when "Yes!" is pressed
+    function startConfetti() {
+      for (let i = 0; i < 50; i++) {
+        let confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.top = "-20px";
+        document.body.appendChild(confetti);
+        setTimeout(() => {
+          confetti.remove();
+        }, 2000);
+      }
+    }
+    
+    // Basic collision detection between two elements
+    function checkCollision(el1, el2) {
+      let rect1 = el1.getBoundingClientRect();
+      let rect2 = el2.getBoundingClientRect();
+      return !(
+        rect1.top > rect2.bottom ||
+        rect1.bottom < rect2.top ||
+        rect1.right < rect2.left ||
+        rect1.left > rect2.right
+      );
+    }
+  </script>
+</body>
+</html>
