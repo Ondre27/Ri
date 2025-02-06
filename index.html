@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.75" />
   <title>Will You Be My Valentine?</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
@@ -27,13 +27,13 @@
       margin-bottom: 20px;
     }
     .gif-container img {
-      width: 500px;
+      width: 450px;
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* No border as requested */
+      
     }
-    /* Valentine question text in black */
+    /* Valentine question */
     .message {
       font-size: 30px;
       font-weight: bold;
@@ -67,7 +67,7 @@
       user-select: none;
       z-index: 1;
     }
-    /* Drift-heart: ambient hearts drifting upward from the bottom */
+    /* Hearts drifting upward */
     .drift-heart {
       position: absolute;
       font-size: 30px;
@@ -79,7 +79,7 @@
       0% { transform: translateY(0); }
       100% { transform: translateY(-120vh); }
     }
-    /* Basket styling: Aesthetic black bar at the bottom */
+    /* Black bar styling */
     #basket {
       position: fixed;
       bottom: 0;
@@ -93,7 +93,7 @@
       box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
       z-index: 3;
     }
-    /* Score display styling */
+    /* Score styling */
     #score {
       position: fixed;
       top: 10px;
@@ -157,7 +157,7 @@
     </p>
   </div>
   
-  <!-- Basket element as an aesthetic black bar -->
+  <!-- Black bar -->
   <div id="basket"></div>
   <!-- Score display -->
   <div id="score">Score: 0</div>
@@ -165,7 +165,7 @@
   <div id="cuteMessage"></div>
   
   <script>
-    let score = 0; // Global score variable
+    let score = 0; // score variable
     const cuteMessages = [
       "You're as sweet as candy!",
       "Every heart counts!",
@@ -186,14 +186,14 @@
       document.getElementById("yesButton").addEventListener("click", respondYes);
       document.getElementById("noButton").addEventListener("click", respondNo);
       
-      // Make the basket (black bar) follow the cursor horizontally
+      // Makes the basket(black bar) follow the cursor horizontally
       document.addEventListener("mousemove", function(e) {
         let basket = document.getElementById("basket");
         let basketWidth = basket.offsetWidth;
         basket.style.left = (e.clientX - basketWidth / 2) + "px";
       });
       
-      // Start ambient drifting hearts for ambiance
+      // Starts ambient drifting hearts for ambiance
       startDriftingHearts();
     });
     
@@ -267,7 +267,6 @@
         heart.classList.add("heart");
         heart.innerHTML = "💖";
         heart.style.left = Math.random() * window.innerWidth + "px";
-        // Hearts originate from the top now
         heart.style.top = "0px";
         document.body.appendChild(heart);
         
@@ -293,7 +292,7 @@
       }, 300);
     }
     
-    // Function to show a cute message for a few seconds
+    // Function to show a cute message
     function showCuteMessage(msg) {
       const cuteMessageDiv = document.getElementById("cuteMessage");
       cuteMessageDiv.innerText = msg;
