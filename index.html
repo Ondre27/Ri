@@ -14,6 +14,7 @@
       50% { background-color: #ffb3b3; }
       100% { background-color: #ffcccb; }
     }
+    
     body {
       display: flex;
       justify-content: center;
@@ -39,7 +40,7 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* No border is applied */
+      /* No border applied */
     }
     /* Valentine question text in black with Pacifico font */
     .message {
@@ -196,6 +197,15 @@
       "Keep shining, beautiful!"
     ];
     
+    // Predefined messages for the No button
+    const noMessages = [
+      "Someday you'll go far. I hope you stay there 🙃😢", 
+      "May both sides of your pillow be uncomfortably warm 💔", 
+      "How about a lambo? 🙃", 
+      "If I wanted to hear from a butthole, I'd fart 😥", 
+      "okay estoy muerto"
+    ];
+    
     document.addEventListener("DOMContentLoaded", function () {
       const audio = document.getElementById("backgroundMusic");
       audio.addEventListener("canplay", function() {
@@ -234,7 +244,9 @@
       }, 4000);
     }
     
-    // Start background music when Yes is pressed
+    let noClickCount = 0;
+    
+    // Background music starts with the Yes button
     function playMusic() {
       const audio = document.getElementById("backgroundMusic");
       audio.play().then(() => {
@@ -250,7 +262,7 @@
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
-      // Do not hide the No button on Yes clicks
+      // Do not hide the No button on Yes; keep it active
       startHeartRain();
       startConfetti();
     }
@@ -258,15 +270,19 @@
     function respondNo() {
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
-      // Change GIF to no response
-      document.getElementById('valentineGif').src = 'no_response.gif';
-      // Move the No button to a random position within the viewport
-      const newLeft = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const newTop = Math.random() * (window.innerHeight - noButton.offsetHeight);
-      noButton.style.position = 'absolute';
+      // Move the No button by a small random offset (reduced by 70% => ±15px range)
+      const currentLeft = noButton.offsetLeft;
+      const currentTop = noButton.offsetTop;
+      const offsetX = ((Math.random() * 100) - 50) * 0.3; // Range: ~ -15 to +15
+      const offsetY = ((Math.random() * 100) - 50) * 0.3;
+      const newLeft = Math.max(0, Math.min(currentLeft + offsetX, window.innerWidth - noButton.offsetWidth));
+      const newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
-      // Increase the Yes button's font size by 2px each time
+      // Cycle through the messages using modulo
+      noButton.innerText = noMessages[(noClickCount) % noMessages.length];
+      noClickCount++;
+      // Increase the Yes button's font size
       const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
       yesButton.style.fontSize = (currentSize + 2) + "px";
     }
