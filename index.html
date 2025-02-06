@@ -173,7 +173,7 @@
       <button class="no" id="noButton">No...</button>
     </div>
     <p class="extra-text" style="display:none; margin-top:20px;">
-      Check this out: <a href="#" id="extra-link">Your Link Here</a>
+      Check this out: <a href="#" id="https://pin.it/3UDjUWXXW">Your Link Here</a>
     </p>
     <p class="extra-text" id="byRamone" style="display:none; margin-top:10px; font-weight: bold;">
       By Ramone
@@ -263,18 +263,18 @@
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
       document.getElementById('noButton').style.display = 'none';
-      noClickCount = 20; // Disable "No" button logic
+      noClickCount = 21; // Disable "No" button logic
       startHeartRain();
       startConfetti(); // Trigger confetti effect when Yes is pressed
     }
     
     function respondNo() {
-      if (noClickCount >= 20) return;
+      if (noClickCount >= 21) return;
       noClickCount++;
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
       document.getElementById('valentineGif').src = 'no_response.gif';
-      if (noClickCount < 20) {
+      if (noClickCount < 21) {
         noButton.style.position = 'absolute';
         noButton.style.left = `${Math.random() * (window.innerWidth * 0.6) - (window.innerWidth * 0.3)}px`;
         noButton.style.top = `${Math.max(50, Math.random() * (window.innerHeight - 200))}px`;
