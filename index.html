@@ -191,14 +191,7 @@
   <div id="cuteMessage"></div>
   
   <script>
-    let score = 0;
-    const cuteMessages = [
-      "You're as sweet as candy!",
-      "Every heart counts!",
-      "Love is in the air!",
-      "You're my sunshine!",
-      "Keep shining, beautiful!"
-    ];
+    let noClickCount = 0;
     const noMessages = [
       "Someday you'll go far. I hope you stay there 🙃😢", 
       "May both sides of your pillow be uncomfortably warm 💔", 
@@ -206,6 +199,32 @@
       "If I wanted to hear from a butthole, I'd fart 😥", 
       "okay estoy muerto"
     ];
+
+    document.getElementById("yesButton").addEventListener("click", respondYes);
+    document.getElementById("noButton").addEventListener("click", respondNo);
+
+    function respondYes() {
+      document.getElementById("valentineGif").src = "yes_response.gif";
+      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
+    }
+
+    function respondNo() {
+      const noButton = document.getElementById("noButton");
+      const yesButton = document.getElementById("yesButton");
+      
+      if (noClickCount < noMessages.length) {
+        const randomX = Math.random() * 200 - 100;
+        const randomY = Math.random() * 80 - 40;
+        noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        noButton.innerText = noMessages[noClickCount];
+        noClickCount++;
+        
+        const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
+        yesButton.style.fontSize = (currentSize + 2) + "px";
+      } else {
+        noButton.style.display = "none";
+      }
+    }
     
     document.addEventListener("DOMContentLoaded", function () {
       const audio = document.getElementById("backgroundMusic");
@@ -243,43 +262,6 @@
           driftHeart.remove();
         }, 15000);
       }, 4000);
-    }
-    
-    let noClickCount = 0;
-    
-    // Background music starts when Yes is pressed
-    function playMusic() {
-      const audio = document.getElementById("backgroundMusic");
-      audio.play().then(() => {
-        console.log("Music is playing.");
-      }).catch(error => {
-        console.error("Audio playback error:", error);
-      });
-    }
-    
-    function respondYes() {
-      document.getElementById('valentineGif').src = 'yes_response.gif';
-      playMusic();
-      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
-      document.querySelector('.extra-text').style.display = 'block';
-      document.querySelector('#byRamone').style.display = 'block';
-      startHeartRain();
-      startConfetti();
-    }
-    
-    function respondNo() {
-      const noButton = document.getElementById('noButton');
-      const yesButton = document.getElementById('yesButton');
-      // Set No button's position using percentage values (random from 0% to 80%)
-      noButton.style.position = 'absolute';
-      noButton.style.left = (Math.random() * 40) + '%';
-      noButton.style.top = (Math.random() * 40) + '%';
-      // Update the No button's text by cycling through the messages
-      noButton.innerText = noMessages[noClickCount % noMessages.length];
-      noClickCount++;
-      // Increase the Yes button's font size by 2px
-      const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
-      yesButton.style.fontSize = (currentSize + 2) + 'px';
     }
     
     // Create falling hearts that fall from the top with a swaying effect
