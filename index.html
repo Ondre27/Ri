@@ -200,6 +200,7 @@
       "You're my sunshine!",
       "Keep shining, beautiful!"
     ];
+    let noClickCount = 0;
     const noMessages = [
       "Someday you'll go far. I hope you stay there 🙃😢", 
       "May both sides of your pillow be uncomfortably warm 💔", 
@@ -246,7 +247,6 @@
       }, 4000);
     }
     
-    let noClickCount = 0;
     
     // Background music starts when Yes is pressed
     function playMusic() {
@@ -277,22 +277,23 @@
         noButton.style.left = '0px';
         noButton.style.top = (window.innerHeight - noButton.offsetHeight) + "px";
       }
-      // Calculate random offset: move up (decrease top) and right (increase left)
-      const offsetX = Math.random() * 15;  // 0 to 15px right
-      const offsetY = Math.random() * 15;  // 0 to 15px up
+
+      //Move the No button by a small random offset (0 to 15px up and right)
+      const offsetX = Math.random() * 15;  // offset to the right
+      const offsetY = Math.random() * 15;  // offset upward
       let currentLeft = noButton.offsetLeft;
       let currentTop = noButton.offsetTop;
+      // Calculate new position (moving up means decreasing top)
       let newLeft = currentLeft + offsetX;
       let newTop = currentTop - offsetY;
-      // Clamp new positions so the button stays visible
+      //Clamp positions so the button stays visible
       newLeft = Math.min(newLeft, window.innerWidth - noButton.offsetWidth);
       newTop = Math.max(newTop, 0);
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
-      // Cycle through messages
+      // Cycle through the messages by updating the button text.
       noButton.innerText = noMessages[noClickCount % noMessages.length];
       noClickCount++;
-      // Increase the Yes button's font size by 2px
       const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
       yesButton.style.fontSize = (currentSize + 2) + "px";
     }
