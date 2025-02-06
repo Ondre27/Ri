@@ -191,52 +191,63 @@
   <div id="cuteMessage"></div>
   
   <script>
-    let score = 0;
-const cuteMessages = [
-  "You’re doing amazing!",
-  "Keep it up, sweetheart!",
-  "Every heart counts!",
-  "Much love to you!"
-];
+  // Global variables
+  let noClickCount = 0;
+  const noMessages = [
+    "Someday you'll go far. I hope you stay there 🙃😢", 
+    "May both sides of your pillow be uncomfortably warm 💔", 
+    "How about a lambo? 🙃", 
+    "If I wanted to hear from a butthole, I'd fart 😥", 
+    "okay estoy muerto"
+  ];
 
-    let noClickCount = 0;
-    const noMessages = [
-      "Someday you'll go far. I hope you stay there 🙃😢", 
-      "May both sides of your pillow be uncomfortably warm 💔", 
-      "How about a lambo? 🙃", 
-      "If I wanted to hear from a butthole, I'd fart 😥", 
-      "okay estoy muerto"
-    ];
+  // Event listeners (make sure these run after DOM is ready)
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("yesButton").addEventListener("click", respondYes);
+    document.getElementById("noButton").addEventListener("click", respondNo);
 
-    function respondYes() {
-      document.getElementById("valentineGif").src = "yes_response.gif";
-      // Play the background music if it’s not already playing.
-      const audio = document.getElementById("backgroundMusic");
-      if (audio.paused) {
-        audio.play().catch(err => console.error("Playback error:", err));
-      }
-      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
-      startConfetti(); // Optionally start confetti if desired.
-      }
+    // Other initialization code…
+    document.addEventListener("mousemove", function(e) {
+      let basket = document.getElementById("basket");
+      let basketWidth = basket.offsetWidth;
+      basket.style.left = (e.clientX - basketWidth / 2) + "px";
+    });
+    startDriftingHearts();
+    // If you want falling hearts as well, call startHeartRain();
+    // startHeartRain();
+  });
 
-    function respondNo() {
-      document.getElementById("valentineGif").src = "no_response.gif";
-      const noButton = document.getElementById("noButton");
-      const yesButton = document.getElementById("yesButton");
-      
-      if (noClickCount < noMessages.length) {
-        const randomX = Math.random() * 150;
-        const randomY = Math.random() * 100;
-        noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
-        noButton.innerText = noMessages[noClickCount];
-        noClickCount++;
-        
-        const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
-        yesButton.style.fontSize = (currentSize + 2) + "px";
-      } else {
-        noButton.style.display = "none";
-      }
+  function respondYes() {
+    // Change gif to the yes response gif
+    document.getElementById("valentineGif").src = "yes_response.gif";
+    alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
+  }
+
+  function respondNo() {
+    const noButton = document.getElementById("noButton");
+
+    // Change gif to the no response gif
+    document.getElementById("valentineGif").src = "no_response.gif";
+
+    // Move the no button randomly within a maximum of 50px (in both directions)
+    const randomX = Math.random() * 100 - 50;  // Range: -50 to 50
+    const randomY = Math.random() * 100 - 50;  // Range: -50 to 50
+    noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+
+    // Optionally update the button text with a message
+    if (noClickCount < noMessages.length) {
+      noButton.innerText = noMessages[noClickCount];
+      noClickCount++;
     }
+    // If you prefer the No button to always stay (and not disappear), then do not hide it.
+    // Otherwise, if you want it to vanish after the messages run out, you can uncomment the code below:
+    // else {
+    //   noButton.style.display = "none";
+    // }
+  }
+
+  // Your other functions (startDriftingHearts, etc.) remain unchanged.
+
     
     document.addEventListener("DOMContentLoaded", function () {
       const audio = document.getElementById("backgroundMusic");
