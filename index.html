@@ -2,30 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Use initial-scale=1.0 for proper rendering -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Load Google Fonts via link tag -->
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
   <title>Will You Be My Valentine?</title>
   <style>
-    /* Animated background gradient for a dynamic feel */
-    @keyframes backgroundAnimation {
-      0% { background-color: #ffcccb; }
-      50% { background-color: #ffb3b3; }
-      100% { background-color: #ffcccb; }
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
     
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      animation: backgroundAnimation 10s infinite;
+      background-color: #ffcccb;
       font-family: 'Quicksand', sans-serif;
       text-align: center;
       overflow: hidden;
       position: relative;
-      background-color: #ffcccb;
     }
     .container {
       position: relative;
@@ -36,12 +27,13 @@
       margin-bottom: 20px;
     }
     .gif-container img {
-      width: 450px;
+      width: 500px;
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+      /* No border as requested */
     }
-    /* Valentine question text in black using Pacifico font */
+    /* Valentine question text in black */
     .message {
       font-size: 30px;
       font-weight: bold;
@@ -50,7 +42,6 @@
     }
     .buttons {
       margin-top: 20px;
-      text-align: center; /* center buttons */
     }
     .yes, .no {
       font-size: 18px;
@@ -63,14 +54,11 @@
     .yes {
       background-color: #28a745;
       color: white;
-      /* Increase size if desired */
-      font-size: 20px;
-      padding: 15px 25px;
     }
     .no {
       background-color: #dc3545;
       color: white;
-      /* No absolute positioning here, so the button stays in line */
+      position: relative;
     }
     .heart {
       position: absolute;
@@ -78,15 +66,6 @@
       font-size: 24px;
       user-select: none;
       z-index: 1;
-    }
-    /* Pop animation for hearts when collected */
-    @keyframes pop {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.5); opacity: 0.7; }
-      100% { transform: scale(2); opacity: 0; }
-    }
-    .pop {
-      animation: pop 300ms forwards;
     }
     /* Drift-heart: ambient hearts drifting upward from the bottom */
     .drift-heart {
@@ -134,7 +113,7 @@
       animation: confetti-fall 2s linear forwards;
     }
     @keyframes confetti-fall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
     /* Cute message popup styling */
@@ -160,11 +139,6 @@
     <source src="valentine_music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
-  <!-- Popping sound effect (supply your own pop_sound.mp3) -->
-  <audio id="popSound" preload="auto">
-    <source src="pop_sound.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
   
   <div class="container">
     <div class="gif-container">
@@ -175,7 +149,6 @@
       <button class="yes" id="yesButton">Yes!</button>
       <button class="no" id="noButton">No...</button>
     </div>
-    <!-- The following paragraph contains the "Check this out" link (initially hidden) -->
     <p class="extra-text" style="display:none; margin-top:20px;">
       Check this out: <a href="#" id="extra-link">Your Link Here</a>
     </p>
@@ -192,87 +165,39 @@
   <div id="cuteMessage"></div>
   
   <script>
-    // Global variables
-    let noClickCount = 0;
-    let score = 0;
-    const noMessages = [
-      "Someday you'll go far. I hope you stay there 🙃😢", 
-      "May both sides of your pillow be uncomfortably warm 💔", 
-      "How about a lambo? 🙃", 
-      "If I wanted to hear from a butthole, I'd fart 😥", 
-      "okay estoy muerto"
-    ];
+    let score = 0; // Global score variable
     const cuteMessages = [
-      "You're amazing!",
-      "Keep it up!",
-      "Sending you love!",
-      "You're the best!"
+      "You're as sweet as candy!",
+      "Every heart counts!",
+      "Love is in the air!",
+      "You're my sunshine!",
+      "Keep shining, beautiful!"
     ];
-  
-    // Wait until the DOM is fully loaded
+    
     document.addEventListener("DOMContentLoaded", function () {
-      const yesButton = document.getElementById("yesButton");
-      const noButton = document.getElementById("noButton");
-      const basket = document.getElementById("basket");
-      const backgroundMusic = document.getElementById("backgroundMusic");
-  
-      // Attach click event listeners
-      yesButton.addEventListener("click", respondYes);
-      noButton.addEventListener("click", respondNo);
-      
-      // Audio event listeners
-      backgroundMusic.addEventListener("canplay", function() {
-        console.log("Background music is ready.");
+      const audio = document.getElementById("backgroundMusic");
+      audio.addEventListener("canplay", function() {
+        console.log("Audio is ready to play.");
       });
-      backgroundMusic.addEventListener("error", function(e) {
+      audio.addEventListener("error", function(e) {
         console.error("Audio error:", e);
       });
       
-      // Make the basket follow the cursor horizontally
+      document.getElementById("yesButton").addEventListener("click", respondYes);
+      document.getElementById("noButton").addEventListener("click", respondNo);
+      
+      // Make the basket (black bar) follow the cursor horizontally
       document.addEventListener("mousemove", function(e) {
+        let basket = document.getElementById("basket");
         let basketWidth = basket.offsetWidth;
         basket.style.left = (e.clientX - basketWidth / 2) + "px";
       });
       
-      // Start ambient drifting hearts in the background
+      // Start ambient drifting hearts for ambiance
       startDriftingHearts();
     });
     
-    function respondYes() {
-      const gif = document.getElementById("valentineGif");
-      gif.src = "yes_response.gif";
-      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
-      
-      // Play the background music
-      const audio = document.getElementById("backgroundMusic");
-      audio.play().catch((err) => {
-        console.error("Playback prevented:", err);
-      });
-      
-      // Start falling hearts and confetti effects
-      startHeartRain();
-      startConfetti();
-      
-      // Reveal the "Check this out" link
-      const extraText = document.querySelector('.extra-text');
-      extraText.style.display = 'block';
-    }
-    
-    function respondNo() {
-      const noButton = document.getElementById("noButton");
-      const gif = document.getElementById("valentineGif");
-      gif.src = "no_response.gif";
-      
-      // Update the button text with a response message
-      if (noClickCount < noMessages.length) {
-        noButton.innerText = noMessages[noClickCount];
-        noClickCount++;
-      } else {
-        noButton.style.display = "none";
-      }
-    }
-    
-    // Create ambient drifting hearts from the bottom
+    // Function to create ambient drifting hearts from the bottom
     function startDriftingHearts() {
       setInterval(() => {
         let driftHeart = document.createElement("div");
@@ -287,45 +212,80 @@
       }, 4000);
     }
     
-    // Create falling hearts that descend from the top with a swaying effect
+    let noClickCount = 0;
+    
+    // Background music is started by the Yes button
+    function playMusic() {
+      const audio = document.getElementById("backgroundMusic");
+      audio.play().then(() => {
+        console.log("Music is playing.");
+      }).catch(error => {
+        console.error("Audio playback error:", error);
+      });
+    }
+    
+    function respondYes() {
+      document.getElementById('valentineGif').src = 'yes_response.gif';
+      playMusic();
+      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
+      document.querySelector('.extra-text').style.display = 'block';
+      document.querySelector('#byRamone').style.display = 'block';
+      document.getElementById('noButton').style.display = 'none';
+      noClickCount = 6; // Disable "No" button logic
+      startHeartRain();
+      startConfetti(); // Trigger confetti effect when Yes is pressed
+    }
+    
+    function respondNo() {
+      if (noClickCount >= 6) return;
+      noClickCount++;
+      const noButton = document.getElementById('noButton');
+      const yesButton = document.getElementById('yesButton');
+      document.getElementById('valentineGif').src = 'no_response.gif';
+      if (noClickCount < 6) {
+        noButton.style.position = 'absolute';
+        noButton.style.left = `${Math.random() * (window.innerWidth * 0.6) - (window.innerWidth * 0.3)}px`;
+        noButton.style.top = `${Math.max(50, Math.random() * (window.innerHeight - 200))}px`;
+        noButton.innerText = [
+          "Someday you'll go far. I hope you stay there 🙃😢", 
+          "May both sides of your pillow be uncomfortably warm 💔", 
+          "How about a lambo? 🙃", 
+          "If I wanted to hear from a butthole, I'd fart 😥", 
+          "okay estoy muerto"
+        ][noClickCount - 1];
+        yesButton.style.fontSize = `${18 + noClickCount * 4}px`;
+      } else {
+        noButton.style.display = 'none';
+        yesButton.style.fontSize = '46px';
+      }
+    }
+    
+    // Function to create falling hearts that fall from the top
     function startHeartRain() {
       setInterval(() => {
         let heart = document.createElement("div");
         heart.classList.add("heart");
         heart.innerHTML = "💖";
         heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.top = "0px"; // Start from the top
+        // Hearts originate from the top now
+        heart.style.top = "0px";
         document.body.appendChild(heart);
         
-        const initialLeft = parseFloat(heart.style.left);
-        let counter = 0;
         let moveInterval = setInterval(() => {
-          counter++;
-          const currentTop = parseInt(heart.style.top);
+          let currentTop = parseInt(heart.style.top);
           heart.style.top = (currentTop + 5) + "px";
-          // Sway left/right using a sine function
-          heart.style.left = (initialLeft + Math.sin(counter / 10) * 20) + "px";
-          
           if (currentTop > window.innerHeight) {
             clearInterval(moveInterval);
             heart.remove();
           }
-          const basket = document.getElementById("basket");
+          let basket = document.getElementById("basket");
           if (checkCollision(heart, basket)) {
             score++;
             document.getElementById("score").innerText = "Score: " + score;
             clearInterval(moveInterval);
-            heart.classList.add("pop");
-            const popSound = document.getElementById("popSound");
-            popSound.currentTime = 0;
-            popSound.play().catch((err) => {
-              console.error("Pop sound playback error:", err);
-            });
-            setTimeout(() => {
-              heart.remove();
-            }, 300);
+            heart.remove();
             if (score % 10 === 0 && score !== 0) {
-              const message = cuteMessages[(score / 10 - 1) % cuteMessages.length];
+              let message = cuteMessages[(score / 10 - 1) % cuteMessages.length];
               showCuteMessage(message);
             }
           }
@@ -333,7 +293,7 @@
       }, 300);
     }
     
-    // Display a cute message popup for a few seconds
+    // Function to show a cute message for a few seconds
     function showCuteMessage(msg) {
       const cuteMessageDiv = document.getElementById("cuteMessage");
       cuteMessageDiv.innerText = msg;
@@ -343,7 +303,7 @@
       }, 4000);
     }
     
-    // Confetti effect for celebration
+    // Confetti effect when "Yes!" is pressed
     function startConfetti() {
       for (let i = 0; i < 50; i++) {
         let confetti = document.createElement("div");
@@ -359,8 +319,8 @@
     
     // Basic collision detection between two elements
     function checkCollision(el1, el2) {
-      const rect1 = el1.getBoundingClientRect();
-      const rect2 = el2.getBoundingClientRect();
+      let rect1 = el1.getBoundingClientRect();
+      let rect2 = el2.getBoundingClientRect();
       return !(
         rect1.top > rect2.bottom ||
         rect1.bottom < rect2.top ||
