@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Set viewport to ensure proper scaling and font rendering -->
+  <!-- Use initial-scale=1.0 for proper rendering -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Load Google Fonts via link tag -->
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
       /* No border applied */
     }
-    /* Valentine question text in black with Pacifico font */
+    /* Valentine question text in black using Pacifico font */
     .message {
       font-size: 30px;
       font-weight: bold;
@@ -131,7 +131,7 @@
       animation: confetti-fall 2s linear forwards;
     }
     @keyframes confetti-fall {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
     /* Cute message popup styling */
@@ -196,8 +196,6 @@
       "You're my sunshine!",
       "Keep shining, beautiful!"
     ];
-    
-    // Predefined messages for the No button
     const noMessages = [
       "Someday you'll go far. I hope you stay there 🙃😢", 
       "May both sides of your pillow be uncomfortably warm 💔", 
@@ -246,7 +244,7 @@
     
     let noClickCount = 0;
     
-    // Background music starts with the Yes button
+    // Background music starts when Yes is pressed
     function playMusic() {
       const audio = document.getElementById("backgroundMusic");
       audio.play().then(() => {
@@ -262,7 +260,6 @@
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
-      // Do not hide the No button on Yes; keep it active
       startHeartRain();
       startConfetti();
     }
@@ -270,19 +267,19 @@
     function respondNo() {
       const noButton = document.getElementById('noButton');
       const yesButton = document.getElementById('yesButton');
-      // Move the No button by a small random offset (reduced by 70% => ±15px range)
+      // Move the No button to a random position within the viewport using ±15px offsets
       const currentLeft = noButton.offsetLeft;
       const currentTop = noButton.offsetTop;
-      const offsetX = ((Math.random() * 100) - 50) * 0.3; // Range: ~ -15 to +15
-      const offsetY = ((Math.random() * 100) - 50) * 0.3;
+      const offsetX = (Math.random() * 30) - 15; // range: -15 to +15
+      const offsetY = (Math.random() * 30) - 15; // range: -15 to +15
       const newLeft = Math.max(0, Math.min(currentLeft + offsetX, window.innerWidth - noButton.offsetWidth));
       const newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
-      // Cycle through the messages using modulo
-      noButton.innerText = noMessages[(noClickCount) % noMessages.length];
+      // Cycle through messages
+      noButton.innerText = noMessages[noClickCount % noMessages.length];
       noClickCount++;
-      // Increase the Yes button's font size
+      // Increase the Yes button's font size by 2px each time
       const currentSize = parseInt(window.getComputedStyle(yesButton).fontSize, 10);
       yesButton.style.fontSize = (currentSize + 2) + "px";
     }
@@ -315,7 +312,6 @@
             score++;
             document.getElementById("score").innerText = "Score: " + score;
             clearInterval(moveInterval);
-            // Trigger pop animation and sound
             heart.classList.add("pop");
             const popSound = document.getElementById("popSound");
             popSound.currentTime = 0;
