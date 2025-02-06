@@ -50,8 +50,7 @@
     }
     .buttons {
       margin-top: 20px;
-      /* Center the buttons */
-      text-align: center;
+      text-align: center; /* center buttons */
     }
     .yes, .no {
       font-size: 18px;
@@ -64,12 +63,14 @@
     .yes {
       background-color: #28a745;
       color: white;
-      /* You can adjust the size as needed */
+      /* Increase size if desired */
+      font-size: 20px;
+      padding: 15px 25px;
     }
     .no {
       background-color: #dc3545;
       color: white;
-      /* Removed any positioning so it aligns with the Yes button */
+      /* No absolute positioning here, so the button stays in line */
     }
     .heart {
       position: absolute;
@@ -174,7 +175,7 @@
       <button class="yes" id="yesButton">Yes!</button>
       <button class="no" id="noButton">No...</button>
     </div>
-    <!-- This paragraph contains the "Check this out" link; it is initially hidden -->
+    <!-- The following paragraph contains the "Check this out" link (initially hidden) -->
     <p class="extra-text" style="display:none; margin-top:20px;">
       Check this out: <a href="#" id="extra-link">Your Link Here</a>
     </p>
@@ -244,13 +245,15 @@
       
       // Play the background music
       const audio = document.getElementById("backgroundMusic");
-      audio.play();
+      audio.play().catch((err) => {
+        console.error("Playback prevented:", err);
+      });
       
       // Start falling hearts and confetti effects
       startHeartRain();
       startConfetti();
       
-      // Show the "Check this out" link by revealing its paragraph
+      // Reveal the "Check this out" link
       const extraText = document.querySelector('.extra-text');
       extraText.style.display = 'block';
     }
@@ -315,7 +318,9 @@
             heart.classList.add("pop");
             const popSound = document.getElementById("popSound");
             popSound.currentTime = 0;
-            popSound.play();
+            popSound.play().catch((err) => {
+              console.error("Pop sound playback error:", err);
+            });
             setTimeout(() => {
               heart.remove();
             }, 300);
