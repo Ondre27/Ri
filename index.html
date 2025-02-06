@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Changed initial-scale to 1.0 for proper font display -->
+  <!-- Set viewport to ensure proper scaling and font rendering -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Load Google Fonts via link tag -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
   <title>Will You Be My Valentine?</title>
   <style>
     /* Animated background gradient for a dynamic feel */
@@ -12,8 +14,6 @@
       50% { background-color: #ffb3b3; }
       100% { background-color: #ffcccb; }
     }
-    
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
     
     body {
       display: flex;
@@ -40,7 +40,7 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* No border applied */
+      /* Border removed for a clean look */
     }
     /* Valentine question text in black with Pacifico font */
     .message {
@@ -131,7 +131,7 @@
       animation: confetti-fall 2s linear forwards;
     }
     @keyframes confetti-fall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
     /* Cute message popup styling */
@@ -237,7 +237,7 @@
     
     let noClickCount = 0;
     
-    // Start background music when Yes is pressed
+    // Background music starts with the Yes button
     function playMusic() {
       const audio = document.getElementById("backgroundMusic");
       audio.play().then(() => {
@@ -253,15 +253,18 @@
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
-      document.getElementById('noButton').style.display = 'none';
-      noClickCount = 6; // Disable further "No" clicks
+      // Keep the No button visible when Yes is clicked
+      noClickCount = 0;
       startHeartRain();
       startConfetti();
     }
     
     function respondNo() {
-      // Instead of disappearing, we move the No button by a small offset
       const noButton = document.getElementById('noButton');
+      const yesButton = document.getElementById('yesButton');
+      // Increment noClickCount to cycle messages
+      noClickCount++;
+      // Calculate a small random offset (±50px) relative to current position
       const currentLeft = noButton.offsetLeft;
       const currentTop = noButton.offsetTop;
       const offsetX = (Math.random() * 100) - 50;
@@ -270,14 +273,17 @@
       const newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
       noButton.style.left = newLeft + "px";
       noButton.style.top = newTop + "px";
-      noButton.innerText = [
-        "Someday you'll go far. I hope you stay there 🙃😢", 
-        "May both sides of your pillow be uncomfortably warm 💔", 
-        "How about a lambo? 🙃", 
-        "If I wanted to hear from a butthole, I'd fart 😥", 
-        "okay estoy muerto"
-      ][noClickCount % 5]; // Cycle through messages
-      noClickCount++;
+      // Cycle through messages using modulo
+      const messages = [
+          "Someday you'll go far. I hope you stay there 🙃😢", 
+          "May both sides of your pillow be uncomfortably warm 💔", 
+          "How about a lambo? 🙃", 
+          "If I wanted to hear from a butthole, I'd fart 😥", 
+          "okay estoy muerto"
+      ];
+      noButton.innerText = messages[(noClickCount - 1) % messages.length];
+      // Optionally adjust the yes button's font size
+      yesButton.style.fontSize = `${18 + noClickCount * 4}px`;
     }
     
     // Create falling hearts that fall from the top with a swaying effect
@@ -296,7 +302,7 @@
           counter++;
           const currentTop = parseInt(heart.style.top);
           heart.style.top = (currentTop + 5) + "px";
-          // Sway left and right using sine wave calculation
+          // Sway left and right using a sine function
           heart.style.left = (initialLeft + Math.sin(counter / 10) * 20) + "px";
           
           if (currentTop > window.innerHeight) {
@@ -308,7 +314,7 @@
             score++;
             document.getElementById("score").innerText = "Score: " + score;
             clearInterval(moveInterval);
-            // Add pop animation and play pop sound
+            // Trigger pop animation and sound
             heart.classList.add("pop");
             const popSound = document.getElementById("popSound");
             popSound.currentTime = 0;
