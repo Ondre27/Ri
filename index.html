@@ -191,6 +191,14 @@
   <div id="cuteMessage"></div>
   
   <script>
+    let score = 0;
+const cuteMessages = [
+  "You’re doing amazing!",
+  "Keep it up, sweetheart!",
+  "Every heart counts!",
+  "Much love to you!"
+];
+
     let noClickCount = 0;
     const noMessages = [
       "Someday you'll go far. I hope you stay there 🙃😢", 
@@ -200,21 +208,25 @@
       "okay estoy muerto"
     ];
 
-    document.getElementById("yesButton").addEventListener("click", respondYes);
-    document.getElementById("noButton").addEventListener("click", respondNo);
-
     function respondYes() {
       document.getElementById("valentineGif").src = "yes_response.gif";
+      // Play the background music if it’s not already playing.
+      const audio = document.getElementById("backgroundMusic");
+      if (audio.paused) {
+        audio.play().catch(err => console.error("Playback error:", err));
+      }
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
-    }
+      startConfetti(); // Optionally start confetti if desired.
+      }
 
     function respondNo() {
+      document.getElementById("valentineGif").src = "no_response.gif";
       const noButton = document.getElementById("noButton");
       const yesButton = document.getElementById("yesButton");
       
       if (noClickCount < noMessages.length) {
-        const randomX = Math.random() * 200 - 100;
-        const randomY = Math.random() * 80 - 40;
+        const randomX = Math.random() * 150;
+        const randomY = Math.random() * 100;
         noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
         noButton.innerText = noMessages[noClickCount];
         noClickCount++;
