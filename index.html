@@ -191,88 +191,86 @@
   <div id="cuteMessage"></div>
   
   <script>
-  // Global variables
-  let noClickCount = 0;
-  const noMessages = [
-    "Someday you'll go far. I hope you stay there 🙃😢", 
-    "May both sides of your pillow be uncomfortably warm 💔", 
-    "How about a lambo? 🙃", 
-    "If I wanted to hear from a butthole, I'd fart 😥", 
-    "okay estoy muerto"
-  ];
-
-  // Event listeners (make sure these run after DOM is ready)
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("yesButton").addEventListener("click", respondYes);
-    document.getElementById("noButton").addEventListener("click", respondNo);
-
-    // Other initialization code…
-    document.addEventListener("mousemove", function(e) {
-      let basket = document.getElementById("basket");
-      let basketWidth = basket.offsetWidth;
-      basket.style.left = (e.clientX - basketWidth / 2) + "px";
-    });
-    startDriftingHearts();
-    // If you want falling hearts as well, call startHeartRain();
-    // startHeartRain();
-  });
-
-  function respondYes() {
-    // Change gif to the yes response gif
-    document.getElementById("valentineGif").src = "yes_response.gif";
-    alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
-  }
-
-  function respondNo() {
-    const noButton = document.getElementById("noButton");
-
-    // Change gif to the no response gif
-    document.getElementById("valentineGif").src = "no_response.gif";
-
-    // Move the no button randomly within a maximum of 50px (in both directions)
-    const randomX = Math.random() * 100 - 50;  // Range: -50 to 50
-    const randomY = Math.random() * 100 - 50;  // Range: -50 to 50
-    noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
-
-    // Optionally update the button text with a message
-    if (noClickCount < noMessages.length) {
-      noButton.innerText = noMessages[noClickCount];
-      noClickCount++;
-    }
-    // If you prefer the No button to always stay (and not disappear), then do not hide it.
-    // Otherwise, if you want it to vanish after the messages run out, you can uncomment the code below:
-    // else {
-    //   noButton.style.display = "none";
-    // }
-  }
-
-  // Your other functions (startDriftingHearts, etc.) remain unchanged.
-
-    
+    // Global variables
+    let noClickCount = 0;
+    let score = 0; // Added to track the falling hearts score
+    const noMessages = [
+      "Someday you'll go far. I hope you stay there 🙃😢", 
+      "May both sides of your pillow be uncomfortably warm 💔", 
+      "How about a lambo? 🙃", 
+      "If I wanted to hear from a butthole, I'd fart 😥", 
+      "okay estoy muerto"
+    ];
+    const cuteMessages = [
+      "You're amazing!",
+      "Keep it up!",
+      "Sending you love!",
+      "You're the best!"
+    ];
+  
+    // Use a single DOMContentLoaded event listener for initialization
     document.addEventListener("DOMContentLoaded", function () {
-      const audio = document.getElementById("backgroundMusic");
-      audio.addEventListener("canplay", function() {
+      // Cache elements for reuse
+      const yesButton = document.getElementById("yesButton");
+      const noButton = document.getElementById("noButton");
+      const basket = document.getElementById("basket");
+      const backgroundMusic = document.getElementById("backgroundMusic");
+  
+      // Attach button click listeners
+      yesButton.addEventListener("click", respondYes);
+      noButton.addEventListener("click", respondNo);
+  
+      // Attach audio event listeners
+      backgroundMusic.addEventListener("canplay", function() {
         console.log("Background music is ready.");
       });
-      audio.addEventListener("error", function(e) {
+      backgroundMusic.addEventListener("error", function(e) {
         console.error("Audio error:", e);
       });
-      
-      document.getElementById("yesButton").addEventListener("click", respondYes);
-      document.getElementById("noButton").addEventListener("click", respondNo);
-      
+  
       // Make the basket follow the cursor horizontally
       document.addEventListener("mousemove", function(e) {
-        let basket = document.getElementById("basket");
-        let basketWidth = basket.offsetWidth;
+        const basketWidth = basket.offsetWidth;
         basket.style.left = (e.clientX - basketWidth / 2) + "px";
       });
-      
+  
       // Start ambient drifting hearts for background
       startDriftingHearts();
+      // If you want falling hearts as well, uncomment the next line:
+      // startHeartRain();
     });
-    
-    // Ambient drifting hearts from the bottom
+  
+    function respondYes() {
+      // Change gif to the yes response gif
+      document.getElementById("valentineGif").src = "yes_response.gif";
+      alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
+      // Optionally, you can trigger additional effects like confetti:
+      // startConfetti();
+    }
+  
+    function respondNo() {
+      const noButton = document.getElementById("noButton");
+  
+      // Change gif to the no response gif
+      document.getElementById("valentineGif").src = "no_response.gif";
+  
+      // Move the no button randomly within a maximum of 50px (in both directions)
+      const randomX = Math.random() * 100 - 50;  // Range: -50 to 50
+      const randomY = Math.random() * 100 - 50;  // Range: -50 to 50
+      noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  
+      // Update the button text with a message (if available)
+      if (noClickCount < noMessages.length) {
+        noButton.innerText = noMessages[noClickCount];
+        noClickCount++;
+      }
+      // If you prefer to hide the button after messages are exhausted, you could do:
+      // else {
+      //   noButton.style.display = "none";
+      // }
+    }
+  
+    // Ambient drifting hearts from the bottom of the screen
     function startDriftingHearts() {
       setInterval(() => {
         let driftHeart = document.createElement("div");
@@ -286,7 +284,7 @@
         }, 15000);
       }, 4000);
     }
-    
+      
     // Create falling hearts that fall from the top with a swaying effect
     function startHeartRain() {
       setInterval(() => {
@@ -330,7 +328,7 @@
         }, 50);
       }, 300);
     }
-    
+      
     // Show a cute message for a few seconds
     function showCuteMessage(msg) {
       const cuteMessageDiv = document.getElementById("cuteMessage");
@@ -340,7 +338,7 @@
         cuteMessageDiv.style.display = "none";
       }, 4000);
     }
-    
+      
     // Confetti effect when "Yes!" is pressed
     function startConfetti() {
       for (let i = 0; i < 50; i++) {
@@ -354,7 +352,7 @@
         }, 2000);
       }
     }
-    
+      
     // Basic collision detection between two elements
     function checkCollision(el1, el2) {
       const rect1 = el1.getBoundingClientRect();
@@ -367,5 +365,6 @@
       );
     }
   </script>
-</body>
-</html>
+  </body>
+  </html>
+  
