@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.75" />
   <title>Will You Be My Valentine?</title>
   <style>
-    /* Animated gradient background for a more dynamic feel */
+    /* Animated background gradient */
     @keyframes backgroundAnimation {
       0% { background-color: #ffcccb; }
       50% { background-color: #ffb3b3; }
       100% { background-color: #ffcccb; }
     }
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
+    
     body {
       display: flex;
       justify-content: center;
@@ -22,6 +23,7 @@
       text-align: center;
       overflow: hidden;
       position: relative;
+      background-color: #ffcccb;
     }
     .container {
       position: relative;
@@ -36,9 +38,9 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* Transparent border removed */
+      /* No border is applied */
     }
-    /* Valentine question text in black */
+    /* Valentine question text in black with Pacifico font */
     .message {
       font-size: 30px;
       font-weight: bold;
@@ -72,7 +74,16 @@
       user-select: none;
       z-index: 1;
     }
-    /* Ambient drifting hearts from the bottom */
+    /* Pop animation for hearts when collected */
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.7; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    .pop {
+      animation: pop 300ms forwards;
+    }
+    /* Drift-heart: ambient hearts drifting upward from the bottom */
     .drift-heart {
       position: absolute;
       font-size: 30px;
@@ -118,7 +129,7 @@
       animation: confetti-fall 2s linear forwards;
     }
     @keyframes confetti-fall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
     /* Cute message popup styling */
@@ -144,7 +155,7 @@
     <source src="valentine_music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
-  <!-- Popping sound effect for heart collection (provide pop_sound.mp3) -->
+  <!-- Popping sound effect (supply your own pop_sound.mp3) -->
   <audio id="popSound" preload="auto">
     <source src="pop_sound.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
@@ -175,7 +186,7 @@
   <div id="cuteMessage"></div>
   
   <script>
-    let score = 0; // Global score variable
+    let score = 0;
     const cuteMessages = [
       "You're as sweet as candy!",
       "Every heart counts!",
@@ -207,7 +218,7 @@
       startDriftingHearts();
     });
     
-    // Function to create ambient drifting hearts from the bottom
+    // Ambient drifting hearts from the bottom
     function startDriftingHearts() {
       setInterval(() => {
         let driftHeart = document.createElement("div");
@@ -224,7 +235,7 @@
     
     let noClickCount = 0;
     
-    // Background music is started by the Yes button
+    // Background music starts with the Yes button
     function playMusic() {
       const audio = document.getElementById("backgroundMusic");
       audio.play().then(() => {
@@ -235,16 +246,15 @@
     }
     
     function respondYes() {
-      // Change the GIF to the yes response GIF
       document.getElementById('valentineGif').src = 'yes_response.gif';
       playMusic();
       alert("Yay! Can't wait to celebrate with you, Ritrika! 💕");
       document.querySelector('.extra-text').style.display = 'block';
       document.querySelector('#byRamone').style.display = 'block';
       document.getElementById('noButton').style.display = 'none';
-      noClickCount = 6; // Disable "No" button logic
+      noClickCount = 6; // Disable No button logic
       startHeartRain();
-      startConfetti(); // Trigger confetti effect when Yes is pressed
+      startConfetti();
     }
     
     function respondNo() {
@@ -254,9 +264,15 @@
       const yesButton = document.getElementById('yesButton');
       document.getElementById('valentineGif').src = 'no_response.gif';
       if (noClickCount < 6) {
-        noButton.style.position = 'absolute';
-        noButton.style.left = `${Math.random() * (window.innerWidth * 0.6) - (window.innerWidth * 0.3)}px`;
-        noButton.style.top = `${Math.max(50, Math.random() * (window.innerHeight - 200))}px`;
+        // Calculate small random offset (±50px) relative to current position
+        let currentLeft = noButton.offsetLeft;
+        let currentTop = noButton.offsetTop;
+        let offsetX = (Math.random() * 100) - 50;
+        let offsetY = (Math.random() * 100) - 50;
+        let newLeft = Math.max(0, Math.min(currentLeft + offsetX, window.innerWidth - noButton.offsetWidth));
+        let newTop = Math.max(0, Math.min(currentTop + offsetY, window.innerHeight - noButton.offsetHeight));
+        noButton.style.left = newLeft + "px";
+        noButton.style.top = newTop + "px";
         noButton.innerText = [
           "Someday you'll go far. I hope you stay there 🙃😢", 
           "May both sides of your pillow be uncomfortably warm 💔", 
@@ -271,7 +287,7 @@
       }
     }
     
-    // Function to create falling hearts (collectibles) that fall from the top with swaying
+    // Function to create falling hearts from the top with a swaying effect
     function startHeartRain() {
       setInterval(() => {
         let heart = document.createElement("div");
@@ -279,18 +295,16 @@
         heart.innerHTML = "💖";
         heart.style.left = Math.random() * window.innerWidth + "px";
         heart.style.top = "0px"; // Start from the top
-        // Save the initial left position for oscillation
-        let initialLeft = parseFloat(heart.style.left);
-        let counter = 0;
         document.body.appendChild(heart);
         
+        let initialLeft = parseFloat(heart.style.left);
+        let counter = 0;
         let moveInterval = setInterval(() => {
           counter++;
           let currentTop = parseInt(heart.style.top);
           heart.style.top = (currentTop + 5) + "px";
-          // Sway left and right using a sine wave function
+          // Sway left and right using a sine wave
           heart.style.left = (initialLeft + Math.sin(counter / 10) * 20) + "px";
-          
           if (currentTop > window.innerHeight) {
             clearInterval(moveInterval);
             heart.remove();
@@ -300,11 +314,15 @@
             score++;
             document.getElementById("score").innerText = "Score: " + score;
             clearInterval(moveInterval);
-            heart.remove();
-            // Play pop sound effect when the heart is collected
+            // Add a "pop" animation before removal
+            heart.classList.add("pop");
+            // Play pop sound effect
             const popSound = document.getElementById("popSound");
             popSound.currentTime = 0;
             popSound.play();
+            setTimeout(() => {
+              heart.remove();
+            }, 300);
             if (score % 10 === 0 && score !== 0) {
               let message = cuteMessages[(score / 10 - 1) % cuteMessages.length];
               showCuteMessage(message);
@@ -338,7 +356,7 @@
       }
     }
     
-    // Basic collision detection between two elements
+    // Basic collision detection
     function checkCollision(el1, el2) {
       let rect1 = el1.getBoundingClientRect();
       let rect2 = el2.getBoundingClientRect();
