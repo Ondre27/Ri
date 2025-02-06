@@ -31,7 +31,7 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      /* No border as requested */
+      /* Removed border styling */
     }
     /* Valentine question text in black */
     .message {
@@ -186,7 +186,7 @@
       document.getElementById("yesButton").addEventListener("click", respondYes);
       document.getElementById("noButton").addEventListener("click", respondNo);
       
-      // Make the basket (black bar) follow the cursor horizontally
+      // Make the basket follow the cursor horizontally
       document.addEventListener("mousemove", function(e) {
         let basket = document.getElementById("basket");
         let basketWidth = basket.offsetWidth;
@@ -197,7 +197,6 @@
       startDriftingHearts();
     });
     
-    // Function to create ambient drifting hearts from the bottom
     function startDriftingHearts() {
       setInterval(() => {
         let driftHeart = document.createElement("div");
@@ -260,21 +259,20 @@
       }
     }
     
-    // Function to create falling hearts that fall from the top
+    // Function to create falling hearts that rise upward from the bottom
     function startHeartRain() {
       setInterval(() => {
         let heart = document.createElement("div");
         heart.classList.add("heart");
         heart.innerHTML = "💖";
         heart.style.left = Math.random() * window.innerWidth + "px";
-        // Hearts originate from the top now
-        heart.style.top = "0px";
+        heart.style.top = window.innerHeight + "px";
         document.body.appendChild(heart);
         
         let moveInterval = setInterval(() => {
           let currentTop = parseInt(heart.style.top);
-          heart.style.top = (currentTop + 5) + "px";
-          if (currentTop > window.innerHeight) {
+          heart.style.top = (currentTop - 5) + "px";
+          if (currentTop < 0) {
             clearInterval(moveInterval);
             heart.remove();
           }
